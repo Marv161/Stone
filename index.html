@@ -22,7 +22,6 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            /* Deshabilitar selección de texto para mayor seguridad */
             user-select: none;
             -webkit-user-select: none;
         }
@@ -40,10 +39,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer; /* Cursor de puntero para indicar interactividad */
+            cursor: pointer;
         }
 
-        /* Contenedor Principal Centrado */
         .main-container {
             display: flex;
             justify-content: center;
@@ -53,7 +51,6 @@
             z-index: 10;
         }
 
-        /* Recuadro Transparente: Compacto */
         .right-section {
             width: 100%;
             max-width: 240px; 
@@ -70,7 +67,6 @@
             position: relative;
         }
 
-        /* Texto Stone: Muy pegado arriba */
         .stone-title {
             font-family: 'Cinzel', serif;
             font-size: 1.7rem; 
@@ -79,7 +75,6 @@
             margin-bottom: 5px; 
             text-transform: uppercase;
             letter-spacing: 4px;
-            
             background-image: linear-gradient(45deg, 
                 rgb(166, 166, 164) 3%, 
                 rgb(54, 0, 0) 26.5%, 
@@ -89,7 +84,6 @@
             background-size: 200% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            
             animation: gradientMove 5s linear infinite;
         }
 
@@ -98,7 +92,6 @@
             100% { background-position: 200% center; }
         }
 
-        /* Imagen Principal Circular */
         .main-image-container {
             width: 90px; 
             height: 90px;
@@ -113,13 +106,13 @@
         .main-image {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: cover; 
+            object-position: center;
             filter: contrast(1.1) grayscale(0.1);
-            /* Evitar que la imagen sea arrastrada */
             pointer-events: none;
+            image-rendering: -webkit-optimize-contrast; 
         }
 
-        /* Efecto de humo animado */
         .smoke-overlay {
             position: absolute;
             top: 0;
@@ -142,7 +135,6 @@
             100% { transform: translateX(0%); }
         }
 
-        /* Contenedor de la frase: Espacio equilibrado */
         .quote-container {
             margin-bottom: 30px; 
             width: 100%;
@@ -161,7 +153,6 @@
             font-family: 'Inter', sans-serif;
         }
 
-        /* Miniaturas */
         .thumbnails {
             display: flex;
             gap: 12px;
@@ -190,8 +181,8 @@
             filter: grayscale(1); 
             opacity: 0.4;
             transition: all 0.3s ease;
-            /* Evitar que las miniaturas sean arrastradas */
             pointer-events: none;
+            image-rendering: -webkit-optimize-contrast;
         }
 
         .thumb:hover {
@@ -205,63 +196,58 @@
         }
 
         /* Reproductor Invisible */
-        #music-player {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            opacity: 0;
-            pointer-events: none;
-            left: -9999px;
+        #audio-container {
+            display: none;
         }
     </style>
 </head>
 <body oncontextmenu="return false;" ondragstart="return false;">
 
-    <!-- Reproductor de YouTube para xatframe -->
-    <div id="music-player">
-        <iframe 
-            id="youtube-iframe"
-            width="1" 
-            height="1" 
-            src="https://www.youtube.com/embed/ouVedNg-6WQ?autoplay=1&loop=1&playlist=ouVedNg-6WQ&enablejsapi=1&mute=0" 
-            frameborder="0" 
-            allow="autoplay; encrypted-media" 
-            allowfullscreen>
-        </iframe>
+    <!-- Reproductor de Audio Local -->
+    <div id="audio-container">
+        <audio id="bg-music" loop>
+            <source src="tool.mp3" type="audio/mpeg">
+            Tu navegador no soporta la reproducción de audio.
+        </audio>
     </div>
 
     <div class="main-container">
         <div class="right-section">
-            <!-- Título Stone -->
             <h1 class="stone-title">𝐒𝐭𝐨𝐧𝐞</h1>
             
-            <!-- Imagen Principal -->
             <div class="main-image-container">
-                <img src="https://i.ibb.co/pv936H3k/PSX-20260127-130531.jpg" alt="Perfil" class="main-image">
+                <img src="https://i.ibb.co/KSjKXtg/260127.jpg" alt="Perfil Principal" class="main-image">
                 <div class="smoke-overlay"></div>
             </div>
 
-            <!-- Frase con alineación exacta -->
             <div class="quote-container">
                 <p class="quote">〞errare humanum est,                
            perseverare autem diabolicum. »    ♱</p>
             </div>
 
-            <!-- Miniaturas -->
             <div class="thumbnails">
                 <a href="https://xat.me/iNonsenses" target="_blank" class="thumb">
-                    <img src="https://i.ibb.co/k2gf7b3y/f945d79a-8b17-462f-905e-1e9d50372217.jpg" alt="Enlace a Nonsense">
+                    <img src="https://i.ibb.co/hJh7vwjF/f945d7.jpg" alt="Enlace a Nonsense">
                 </a>
                 
                 <a href="https://xat.me/xBlitzkrieg" target="_blank" class="thumb">
-                    <img src="https://i.ibb.co/v6dRHzGk/24390461-6e11-4b3d-9fe4-6c0d687742be.jpg" alt="Enlace a Blitzkrieg">
+                    <img src="https://i.ibb.co/WWptmVDy/24.jpg" alt="Enlace a Blitzkrieg">
                 </a>
             </div>
         </div>
     </div>
 
     <script>
-        // Bloqueo de teclas de inspección (F12, Ctrl+Shift+I, Ctrl+U, etc.)
+        const music = document.getElementById('bg-music');
+
+        // Función para intentar reproducir la música
+        function playMusic() {
+            music.play().catch(error => {
+                console.log("Autoplay bloqueado. Esperando interacción.");
+            });
+        }
+
+        // Deshabilitar comandos de teclado para ver fuente
         document.onkeydown = function(e) {
             if (e.keyCode === 123) return false;
             if (e.ctrlKey && e.shiftKey && e.keyCode === 73) return false;
@@ -270,22 +256,18 @@
             if (e.ctrlKey && e.keyCode === 85) return false;
         };
 
-        // Activar música al dar click en cualquier parte del sitio (Fallback de Autoplay)
-        document.body.addEventListener('click', function() {
-            const iframe = document.getElementById('youtube-iframe');
-            if (iframe) {
-                // Envía comando de reproducción al iframe de YouTube
-                iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
-            }
-        }, { once: true }); // Solo se ejecuta una vez al primer click
+        // Forzar inicio al cargar (útil en frames de xat que ya tienen permiso)
+        window.addEventListener('load', playMusic);
 
-        // Script para intentar forzar el inicio en xatframes
-        window.addEventListener('load', function() {
-            const iframe = document.getElementById('youtube-iframe');
-            setTimeout(() => {
-                const currentSrc = iframe.src;
-                iframe.src = currentSrc;
-            }, 500);
+        // Fallback: Activar al primer clic en cualquier parte del sitio
+        document.body.addEventListener('click', function() {
+            playMusic();
+        }, { once: true });
+
+        // Protección adicional para imágenes (evitar menú contextual y arrastre)
+        document.querySelectorAll('img').forEach(img => {
+            img.addEventListener('contextmenu', e => e.preventDefault());
+            img.addEventListener('dragstart', e => e.preventDefault());
         });
     </script>
 </body>
