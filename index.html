@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;700&display=swap');
+
+        /* Paleta de Colores para Bordes y Detalles */
+        :root {
+            --negro-absoluto: #000000; 
+            --marron-envejecido: #2A241C; 
+            --marron-oxido: #4A3F2F; 
+            --beige-hueso: #9C8F79; 
+            --marfil-sucio: #CFC6B3; 
+        }
+
+        /* Reset y fondo negro absoluto */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            /* Deshabilitar selección de texto para mayor seguridad */
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        html, body {
+            background-color: var(--negro-absoluto) !important;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            color: var(--marfil-sucio);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer; /* Cursor de puntero para indicar interactividad */
+        }
+
+        /* Contenedor Principal Centrado */
+        .main-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            padding: 20px;
+            z-index: 10;
+        }
+
+        /* Recuadro Transparente: Compacto */
+        .right-section {
+            width: 100%;
+            max-width: 240px; 
+            min-height: 380px; 
+            padding: 25px 10px; 
+            border: 1px solid var(--marron-oxido); 
+            border-left: 2px solid var(--beige-hueso); 
+            border-radius: 40px; 
+            background: transparent; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start; 
+            position: relative;
+        }
+
+        /* Texto Stone: Muy pegado arriba */
+        .stone-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.7rem; 
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 5px; 
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            
+            background-image: linear-gradient(45deg, 
+                rgb(166, 166, 164) 3%, 
+                rgb(54, 0, 0) 26.5%, 
+                rgb(166, 166, 164) 50%,
+                rgb(54, 0, 0) 73.5%,
+                rgb(166, 166, 164) 97%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            
+            animation: gradientMove 5s linear infinite;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+
+        /* Imagen Principal Circular */
+        .main-image-container {
+            width: 90px; 
+            height: 90px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 1px solid var(--marron-envejecido); 
+            margin-bottom: 30px; 
+            position: relative;
+            background-color: #000;
+        }
+
+        .main-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: contrast(1.1) grayscale(0.1);
+            /* Evitar que la imagen sea arrastrada */
+            pointer-events: none;
+        }
+
+        /* Efecto de humo animado */
+        .smoke-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(to right, 
+                transparent, 
+                rgba(156, 143, 121, 0.1), 
+                transparent, 
+                rgba(207, 198, 179, 0.08), 
+                transparent);
+            opacity: 0.8;
+            pointer-events: none;
+            animation: smokeMove 12s linear infinite;
+        }
+
+        @keyframes smokeMove {
+            0% { transform: translateX(-50%); }
+            100% { transform: translateX(0%); }
+        }
+
+        /* Contenedor de la frase: Espacio equilibrado */
+        .quote-container {
+            margin-bottom: 30px; 
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .quote {
+            color: #ffffff;
+            font-size: 0.65rem; 
+            font-style: italic;
+            line-height: 1.5;
+            white-space: pre; 
+            opacity: 0.95;
+            letter-spacing: 0.1px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Miniaturas */
+        .thumbnails {
+            display: flex;
+            gap: 12px;
+            width: 100%;
+            justify-content: center;
+            margin-top: 0; 
+            padding-bottom: 5px;
+        }
+
+        .thumb {
+            width: 60px; 
+            height: 60px; 
+            background-color: transparent;
+            border: 1px solid var(--marron-oxido);
+            border-radius: 12px; 
+            overflow: hidden;
+            cursor: pointer;
+            display: block;
+            transition: all 0.3s ease;
+        }
+
+        .thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(1); 
+            opacity: 0.4;
+            transition: all 0.3s ease;
+            /* Evitar que las miniaturas sean arrastradas */
+            pointer-events: none;
+        }
+
+        .thumb:hover {
+            border-color: var(--marfil-sucio);
+            transform: scale(1.05);
+        }
+
+        .thumb:hover img {
+            opacity: 0.9;
+            filter: grayscale(0.3);
+        }
+
+        /* Reproductor Invisible */
+        #music-player {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+            pointer-events: none;
+            left: -9999px;
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;" ondragstart="return false;">
+
+    <!-- Reproductor de YouTube para xatframe -->
+    <div id="music-player">
+        <iframe 
+            id="youtube-iframe"
+            width="1" 
+            height="1" 
+            src="https://www.youtube.com/embed/ouVedNg-6WQ?autoplay=1&loop=1&playlist=ouVedNg-6WQ&enablejsapi=1&mute=0" 
+            frameborder="0" 
+            allow="autoplay; encrypted-media" 
+            allowfullscreen>
+        </iframe>
+    </div>
+
+    <div class="main-container">
+        <div class="right-section">
+            <!-- Título Stone -->
+            <h1 class="stone-title">𝐒𝐭𝐨𝐧𝐞</h1>
+            
+            <!-- Imagen Principal -->
+            <div class="main-image-container">
+                <img src="https://i.ibb.co/pv936H3k/PSX-20260127-130531.jpg" alt="Perfil" class="main-image">
+                <div class="smoke-overlay"></div>
+            </div>
+
+            <!-- Frase con alineación exacta -->
+            <div class="quote-container">
+                <p class="quote">〞errare humanum est,                
+           perseverare autem diabolicum. »    ♱</p>
+            </div>
+
+            <!-- Miniaturas -->
+            <div class="thumbnails">
+                <a href="https://xat.me/iNonsenses" target="_blank" class="thumb">
+                    <img src="https://i.ibb.co/k2gf7b3y/f945d79a-8b17-462f-905e-1e9d50372217.jpg" alt="Enlace a Nonsense">
+                </a>
+                
+                <a href="https://xat.me/xBlitzkrieg" target="_blank" class="thumb">
+                    <img src="https://i.ibb.co/v6dRHzGk/24390461-6e11-4b3d-9fe4-6c0d687742be.jpg" alt="Enlace a Blitzkrieg">
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Bloqueo de teclas de inspección (F12, Ctrl+Shift+I, Ctrl+U, etc.)
+        document.onkeydown = function(e) {
+            if (e.keyCode === 123) return false;
+            if (e.ctrlKey && e.shiftKey && e.keyCode === 73) return false;
+            if (e.ctrlKey && e.shiftKey && e.keyCode === 74) return false;
+            if (e.ctrlKey && e.shiftKey && e.keyCode === 67) return false;
+            if (e.ctrlKey && e.keyCode === 85) return false;
+        };
+
+        // Activar música al dar click en cualquier parte del sitio (Fallback de Autoplay)
+        document.body.addEventListener('click', function() {
+            const iframe = document.getElementById('youtube-iframe');
+            if (iframe) {
+                // Envía comando de reproducción al iframe de YouTube
+                iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+            }
+        }, { once: true }); // Solo se ejecuta una vez al primer click
+
+        // Script para intentar forzar el inicio en xatframes
+        window.addEventListener('load', function() {
+            const iframe = document.getElementById('youtube-iframe');
+            setTimeout(() => {
+                const currentSrc = iframe.src;
+                iframe.src = currentSrc;
+            }, 500);
+        });
+    </script>
+</body>
+</html>
